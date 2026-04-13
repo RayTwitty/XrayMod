@@ -155,37 +155,31 @@ void Utils::InitVersion()
 
 	// Т.к. функция проверки версии из xrGameSpy ненадёжна и может брать версию из реестра,
 	// версия может отличаться от реальной, поэтому мы будем искать строку версии прямо в дллке.
-	DWORD version_addr = FindPattern((DWORD)miXRGameSpy.lpBaseOfDll, miXRGameSpy.SizeOfImage, "1.0006\0", "xxxxxxxx");
+	DWORD version_addr = FindPattern((DWORD)miXRGameSpy.lpBaseOfDll, miXRGameSpy.SizeOfImage, "1.0005\0", "xxxxxxxx");
 	if (version_addr != NULL) {
-		Utils::Patch = p_1_0006;
+		Utils::Patch = p_1_0005;
 	} else {
-		version_addr = FindPattern((DWORD)miXRGameSpy.lpBaseOfDll, miXRGameSpy.SizeOfImage, "1.0005\0", "xxxxxxxx");
+		version_addr = FindPattern((DWORD)miXRGameSpy.lpBaseOfDll, miXRGameSpy.SizeOfImage, "1.0004\0", "xxxxxxxx");
 		if (version_addr != NULL) {
-			Utils::Patch = p_1_0005;
+			Utils::Patch = p_1_0004;
 		} else {
-			version_addr = FindPattern((DWORD)miXRGameSpy.lpBaseOfDll, miXRGameSpy.SizeOfImage, "1.0004\0", "xxxxxxxx");
+			version_addr = FindPattern((DWORD)miXRGameSpy.lpBaseOfDll, miXRGameSpy.SizeOfImage, "1.0003\0", "xxxxxxxx");
 			if (version_addr != NULL) {
-				Utils::Patch = p_1_0004;
+				Utils::Patch = p_1_0003;
 			} else {
-				version_addr = FindPattern((DWORD)miXRGameSpy.lpBaseOfDll, miXRGameSpy.SizeOfImage, "1.0003\0", "xxxxxxxx");
+				version_addr = FindPattern((DWORD)miXRGameSpy.lpBaseOfDll, miXRGameSpy.SizeOfImage, "1.0002\0", "xxxxxxxx");
 				if (version_addr != NULL) {
-					Utils::Patch = p_1_0003;
+					Utils::Patch = p_1_0002;
 				} else {
-					version_addr = FindPattern((DWORD)miXRGameSpy.lpBaseOfDll, miXRGameSpy.SizeOfImage, "1.0002\0", "xxxxxxxx");
+					version_addr = FindPattern((DWORD)miXRGameSpy.lpBaseOfDll, miXRGameSpy.SizeOfImage, "1.1009\0", "xxxxxxxx");
 					if (version_addr != NULL) {
-						Utils::Patch = p_1_0002;
+						Utils::Patch = p_1_0001;
 					} else {
-						version_addr = FindPattern((DWORD)miXRGameSpy.lpBaseOfDll, miXRGameSpy.SizeOfImage, "1.1009\0", "xxxxxxxx");
+						version_addr = FindPattern((DWORD)miXRGameSpy.lpBaseOfDll, miXRGameSpy.SizeOfImage, "0.1009\0", "xxxxxxxx");
 						if (version_addr != NULL) {
-							Utils::Patch = p_1_0001;
+							Utils::Patch = p_1_0000;
 						} else {
-							version_addr = FindPattern((DWORD)miXRGameSpy.lpBaseOfDll, miXRGameSpy.SizeOfImage, "0.1009\0", "xxxxxxxx");
-							if (version_addr != NULL) {
-								Utils::Patch = p_1_0000;
-							} else {
-								Utils::Patch = UNKNOWN;
-								MessageBox(NULL, "Unknown game version.", NULL, MB_OK);
-							}
+							Utils::Patch = p_1_0006;
 						}
 					}
 				}

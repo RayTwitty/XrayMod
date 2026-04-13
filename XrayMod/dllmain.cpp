@@ -60,10 +60,8 @@ void RestoreCMD()
 		AddCommand(Console, cmd_g_unlimitedammo);
 	}
 
-	// В патче 1.0002 команды fov и hud_fov есть, поэтому проверяем их существование
-	if (fov && Patcher::FindPattern((DWORD)miXRGame.lpBaseOfDll, miXRGame.SizeOfImage, "hud_fov", "xxxxxxxx") == NULL)
-	{
-		float* psHUD_FOV = (float*)GetProcAddress(NULL, "?psHUD_FOV@@3MA");
+	// В патче 1.0002, а так-же в некоторых пропатченных xray extensions длл, команды fov и hud_fov есть, поэтому проверяем их существование
+	if (fov && Patcher::FindPattern((DWORD)miXRGame.lpBaseOfDll, miXRGame.SizeOfImage, "fov", "xxxxxxxx") == NULL) {
 		float* g_fov;
 
 		// C6 81 ? ? ? ? ? F3 0F 10 05
@@ -78,17 +76,19 @@ void RestoreCMD()
 			g_fov = *(float**)(instr_g_fov + 11);
 		}
 
-		void* cmd_fov		= _aligned_malloc(0x18, 0x4);
-		void* cmd_hud_fov	= _aligned_malloc(0x18, 0x4);
-
 		// В версиях 1.0000 и 1.0001 g_fov защищён от записи. Снимаем защиту.
 		DWORD OldFovProtect = NULL;
 		VirtualProtect(g_fov, sizeof(float), PAGE_READWRITE, &OldFovProtect);
 
-		CCC_Float(cmd_fov,		"fov",		g_fov,		5.0f, 180.0f);
-		CCC_Float(cmd_hud_fov,	"hud_fov",	psHUD_FOV,	0.1f, 1.0f);
-
+		void* cmd_fov = _aligned_malloc(0x18, 0x4);
+		CCC_Float(cmd_fov, "fov", g_fov, 5.0f, 180.0f);
 		AddCommand(Console, cmd_fov);
+	}
+
+	if (fov && Patcher::FindPattern((DWORD)miXRGame.lpBaseOfDll, miXRGame.SizeOfImage, "hud_fov", "xxxxxxxx") == NULL) {
+		float* psHUD_FOV = (float*)GetProcAddress(NULL, "?psHUD_FOV@@3MA");
+		void* cmd_hud_fov = _aligned_malloc(0x18, 0x4);
+		CCC_Float(cmd_hud_fov, "hud_fov", psHUD_FOV, 0.1f, 1.0f);
 		AddCommand(Console, cmd_hud_fov);
 	}
 }
@@ -162,7 +162,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved)
 		//AllocConsole();
 		//freopen("CONOUT$", "w", stdout);
 
-		Beep(1000, 200);
+		if (Utils::GetBool("other", "beep", true)) {
+			Beep(1000, 200);
+		}
 		MH_Initialize();
 
 #ifndef _WIN64
