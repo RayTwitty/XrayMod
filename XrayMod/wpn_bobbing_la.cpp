@@ -210,7 +210,7 @@ void CWeaponBobbing::Update(Fmatrix &m)
 			ST	= m_fSpeedWalk * fTime * k;
 		}
 
-		float _sinA	= _abs(_sin(ST) * A) * fReminderFactor;
+		float _sinA	= _abs(_sin(ST) * A) * -1.f * fReminderFactor;
 		float _cosA	= _cos(ST) * A * fReminderFactor;
 
 		m.c.y		+=	_sinA;
