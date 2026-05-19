@@ -1,0 +1,11 @@
+# Visual Studio cache and settings
+.vs/
+ipch/
+*.suo
+*.user
+*.aps
+*.opensdf
+*.sdf
+
+# binaries and temporary files
+Build/
