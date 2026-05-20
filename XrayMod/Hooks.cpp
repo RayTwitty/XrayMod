@@ -14,7 +14,6 @@ _IR_OnKeyboardPress CDemoRecord_IR_OnKeyboardPress_Orig = nullptr;
 Hooks::Hooks()
 {
 	teleport = Utils::GetBool("other", "teleport", true);
-	wpn_bobbing = Utils::GetBool("wpn_bobbing_effector", "enabled", true);
 
 	if (wpn_bobbing) {
 		g_pWpnBobbing = new CWeaponBobbing;

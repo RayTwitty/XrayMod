@@ -2,6 +2,8 @@
 
 #include "wpn_bobbing_la.h"
 
+extern u32 psGAME_Flags;
+
 /* some X-Ray specific types */
 float _cos(float a) { return cos(a); }
 float _sin(float a) { return sin(a); }
@@ -171,6 +173,9 @@ void CWeaponBobbing::CheckState()
 
 void CWeaponBobbing::Update(Fmatrix &m)
 {
+	if (!(psGAME_Flags & HUD_BOBBING))
+		return;
+
 	CheckState();
 	if (dwMState & ACTOR_DEFS::mcAnyMove)
 	{
