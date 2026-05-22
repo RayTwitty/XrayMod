@@ -22,7 +22,7 @@
     <ProjectGuid>{3728A65A-37F2-4394-90E8-90DD99CD45B9}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>XrayMod</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -78,6 +78,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>dinput8</TargetName>
+    <IntDir>$(SolutionDir)Build\Intermediate\</IntDir>
+    <OutDir>$(SolutionDir)Build\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

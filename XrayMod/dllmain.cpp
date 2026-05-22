@@ -10,6 +10,8 @@
 #define COMMANDS "restore_deleted_commands"
 bool cheats = true;
 bool fov = true;
+extern bool wpn_bobbing;
+u32 psGAME_Flags = 0;
 
 #ifndef _WIN64
 typedef HMODULE(WINAPI* _LoadLibraryA)(LPCSTR lpLibFileName);
@@ -91,6 +93,13 @@ void RestoreCMD()
 		CCC_Float(cmd_hud_fov, "hud_fov", psHUD_FOV, 0.1f, 1.0f);
 		AddCommand(Console, cmd_hud_fov);
 	}
+
+	if (wpn_bobbing) {
+		psGAME_Flags |= HUD_BOBBING; // По дефолту раскачка должна быть включена, поэтому взводим флажок
+		void* cmd_hud_bobbing = _aligned_malloc(0x14, 0x4);
+		CCC_Mask(cmd_hud_bobbing, "hud_bobbing", &psGAME_Flags, HUD_BOBBING);
+		AddCommand(Console, cmd_hud_bobbing);
+	}
 }
 
 HMODULE WINAPI LoadLibraryA_Hook(LPCSTR lpLibFileName)
@@ -124,6 +133,13 @@ void RestoreCMD(void* _this)
 
 	AddCommand_Orig(_this, cmd_g_god);
 	AddCommand_Orig(_this, cmd_g_unlimitedammo);
+
+	if (wpn_bobbing) {
+		psGAME_Flags |= HUD_BOBBING; // По дефолту раскачка должна быть включена, поэтому взводим флажок
+		void* cmd_hud_bobbing = _aligned_malloc(0x44, 0x8);
+		CCC_Mask(cmd_hud_bobbing, "hud_bobbing", &psGAME_Flags, HUD_BOBBING);
+		AddCommand_Orig(_this, cmd_hud_bobbing);
+	}
 }
 
 void __fastcall AddCommand_Hook(void* _this, void* cmd)
@@ -174,8 +190,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved)
 #endif
 
 		cheats = Utils::GetBool(COMMANDS, "cheats", true);
+		wpn_bobbing = Utils::GetBool(BOBBING_SECT, "enabled", true);
 
-		if (cheats || fov) {
+		if (cheats || fov || wpn_bobbing) {
 #ifndef _WIN64
 			// Команды нужно регистрировать сразу как только загружена длл, иначе значения команд будут сбрасываться при запуске, поэтому делаем это в хуке.
 			HMODULE kernel32 = GetModuleHandle("Kernel32.dll");

@@ -9,6 +9,11 @@ typedef unsigned u32;
 typedef unsigned long long u64;
 typedef char string256[256];
 
+enum EGameFlags
+{
+	HUD_BOBBING = (1 << 0),
+};
+
 #ifndef _WIN64
 typedef bool (__cdecl* _isActorAccelerated)(u32 mstate, bool ZoomMode);
 typedef bool (__thiscall* _CActorCondition_IsLimping)(DWORD _this);

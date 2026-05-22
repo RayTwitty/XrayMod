@@ -2,6 +2,8 @@
 
 #include "wpn_bobbing_la.h"
 
+extern u32 psGAME_Flags;
+
 /* some X-Ray specific types */
 float _cos(float a) { return cos(a); }
 float _sin(float a) { return sin(a); }
@@ -145,13 +147,13 @@ void CWeaponBobbing::Load()
 	fReminderFactor	= 0;
 	is_limping		= false;
 
-	m_fAmplitudeRun		= Utils::GetFloat(BOBBING_SECT, "run_amplitude", 0.0045f); //pSettings->r_float(BOBBING_SECT, "run_amplitude");
-	m_fAmplitudeWalk	= Utils::GetFloat(BOBBING_SECT, "walk_amplitude", 0.0035f); //pSettings->r_float(BOBBING_SECT, "walk_amplitude");
-	m_fAmplitudeLimp	= Utils::GetFloat(BOBBING_SECT, "limp_amplitude", 0.0025f); //pSettings->r_float(BOBBING_SECT, "limp_amplitude");
+	m_fAmplitudeRun		= Utils::GetFloat(BOBBING_SECT, "run_amplitude", 0.0075f); //pSettings->r_float(BOBBING_SECT, "run_amplitude");
+	m_fAmplitudeWalk	= Utils::GetFloat(BOBBING_SECT, "walk_amplitude", 0.005f); //pSettings->r_float(BOBBING_SECT, "walk_amplitude");
+	m_fAmplitudeLimp	= Utils::GetFloat(BOBBING_SECT, "limp_amplitude", 0.011f); //pSettings->r_float(BOBBING_SECT, "limp_amplitude");
 
-	m_fSpeedRun			= Utils::GetFloat(BOBBING_SECT, "run_speed", 8.0f); //pSettings->r_float(BOBBING_SECT, "run_speed");
-	m_fSpeedWalk		= Utils::GetFloat(BOBBING_SECT, "walk_speed", 6.0f); //pSettings->r_float(BOBBING_SECT, "walk_speed");
-	m_fSpeedLimp		= Utils::GetFloat(BOBBING_SECT, "limp_speed", 5.0f); //pSettings->r_float(BOBBING_SECT, "limp_speed");
+	m_fSpeedRun			= Utils::GetFloat(BOBBING_SECT, "run_speed", 10.0f); //pSettings->r_float(BOBBING_SECT, "run_speed");
+	m_fSpeedWalk		= Utils::GetFloat(BOBBING_SECT, "walk_speed", 7.0f); //pSettings->r_float(BOBBING_SECT, "walk_speed");
+	m_fSpeedLimp		= Utils::GetFloat(BOBBING_SECT, "limp_speed", 6.0f); //pSettings->r_float(BOBBING_SECT, "limp_speed");
 }
 
 /*
@@ -171,6 +173,9 @@ void CWeaponBobbing::CheckState()
 
 void CWeaponBobbing::Update(Fmatrix &m)
 {
+	if (!(psGAME_Flags & HUD_BOBBING))
+		return;
+
 	CheckState();
 	if (dwMState & ACTOR_DEFS::mcAnyMove)
 	{
@@ -210,7 +215,7 @@ void CWeaponBobbing::Update(Fmatrix &m)
 			ST	= m_fSpeedWalk * fTime * k;
 		}
 
-		float _sinA	= _abs(_sin(ST) * A) * fReminderFactor;
+		float _sinA	= _abs(_sin(ST) * A) * -1.f * fReminderFactor;
 		float _cosA	= _cos(ST) * A * fReminderFactor;
 
 		m.c.y		+=	_sinA;
