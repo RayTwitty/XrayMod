@@ -95,7 +95,6 @@ void RestoreCMD()
 	}
 
 	if (wpn_bobbing) {
-		psGAME_Flags |= HUD_BOBBING; // По дефолту раскачка должна быть включена, поэтому взводим флажок
 		void* cmd_hud_bobbing = _aligned_malloc(0x14, 0x4);
 		CCC_Mask(cmd_hud_bobbing, "hud_bobbing", &psGAME_Flags, HUD_BOBBING);
 		AddCommand(Console, cmd_hud_bobbing);
@@ -125,17 +124,18 @@ void RestoreCMD(void* _this)
 	void* psActorFlags = (void*)Utils::GetAddrFromRelativeInstr(instr_psActorFlags, 7, 2);
 	_CCC_Mask CCC_Mask = (_CCC_Mask)GetProcAddress(NULL, "??0CCC_Mask@@QEAA@PEBDPEAU?$_flags@I@@I@Z");
 
-	void* cmd_g_god = _aligned_malloc(0x44, 0x8);
-	void* cmd_g_unlimitedammo = _aligned_malloc(0x44, 0x8);
+	if (cheats) {
+		void* cmd_g_god = _aligned_malloc(0x44, 0x8);
+		void* cmd_g_unlimitedammo = _aligned_malloc(0x44, 0x8);
 
-	CCC_Mask(cmd_g_god, "g_god", psActorFlags, 1);
-	CCC_Mask(cmd_g_unlimitedammo, "g_unlimitedammo", psActorFlags, 8);
+		CCC_Mask(cmd_g_god, "g_god", psActorFlags, 1);
+		CCC_Mask(cmd_g_unlimitedammo, "g_unlimitedammo", psActorFlags, 8);
 
-	AddCommand_Orig(_this, cmd_g_god);
-	AddCommand_Orig(_this, cmd_g_unlimitedammo);
+		AddCommand_Orig(_this, cmd_g_god);
+		AddCommand_Orig(_this, cmd_g_unlimitedammo);
+	}
 
 	if (wpn_bobbing) {
-		psGAME_Flags |= HUD_BOBBING; // По дефолту раскачка должна быть включена, поэтому взводим флажок
 		void* cmd_hud_bobbing = _aligned_malloc(0x44, 0x8);
 		CCC_Mask(cmd_hud_bobbing, "hud_bobbing", &psGAME_Flags, HUD_BOBBING);
 		AddCommand_Orig(_this, cmd_hud_bobbing);
@@ -175,6 +175,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved)
 {
 	if(reason == DLL_PROCESS_ATTACH)
 	{
+		// Дефолтные значения новых флажков
+		psGAME_Flags |= HUD_BOBBING;
+
 		//AllocConsole();
 		//freopen("CONOUT$", "w", stdout);
 
